@@ -6,6 +6,7 @@ type Track = {
   name: string;
   id: number;
   image: string;
+  artists: string[];
 };
 
 function StartButton({onStart}:any) {
@@ -33,6 +34,7 @@ const Game:React.FC<GameProps> = ({onEnd, firstSong, secondSong}) => {
           }}
         >
           <h3>{firstSong.name}</h3>
+          <h6>{firstSong.artists}</h6>
         </div>
         <div 
           id="rightSong"
@@ -41,6 +43,7 @@ const Game:React.FC<GameProps> = ({onEnd, firstSong, secondSong}) => {
           }}
         >
           <h3>{secondSong.name}</h3>
+          <h6>{secondSong.artists}</h6>
         </div>
       </div>
       <div>
@@ -56,7 +59,8 @@ function App() {
   const sampleTrack: Track = {
     id: 1,
     name: 'Song Title',
-    image: ''
+    image: '',
+    artists: []
   };
 
   const [showStartButton, setShowStartButton] = React.useState(true);
@@ -72,15 +76,25 @@ function App() {
     try {
       console.log("handling starting the game");
       const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/startGame`);
+      const artists1: string[] = [];
+      const artists2: string[] = [];
+      data[0].track.album.artists.map((item: any) => {
+        artists1.push(item.name);
+      });
+      data[1].track.album.artists.map((item: any) => {
+        artists2.push(item.name);
+      });
       const song1: Track = {
         name: data[0].track.name,
         id: data[0].track.id,
-        image: data[0].track.album.images[0].url
+        image: data[0].track.album.images[0].url,
+        artists: artists1
       };
       const song2: Track = {
         name: data[1].track.name,
         id: data[1].track.id,
-        image: data[1].track.album.images[0].url
+        image: data[1].track.album.images[0].url,
+        artists: artists2
       }
       setFirstSong(song1);
       setSecondSong(song2);
