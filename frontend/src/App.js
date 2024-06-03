@@ -2,31 +2,67 @@ import './App.css';
 import axios from 'axios';
 import React, { useState } from 'react';
 
-function App() {
-  const [profile, setProfile] = useState(null);
+function StartButton({onStart}) {
+  return (
+    <button id="startGame" onClick={onStart}>
+      Start
+    </button>
+  );
+};
 
-  const fetchProfile = async () => {
+function Game({onEnd, firstSong, secondSong}) {
+  return (
+    <div id="game" display="none" visibility="hidden">
+      <div>
+        <h3>{firstSong}</h3>
+      </div>
+      <div>
+        <h3>{secondSong}</h3>
+        <button id="higherButton">Higher</button>
+        <button id="lowerButton">Lower</button>
+      </div>
+      <button id="handleEnd" onClick={onEnd}>End game</button>
+    </div>
+  );
+};
+
+function App() {
+  const [showStartButton, setShowStartButton] = React.useState(true);
+  const [showGame, setShowGame] = React.useState(false);
+  const [firstSong, setFirstSong] = React.useState('');
+  const [secondSong, setSecondSong] = React.useState('');
+
+  const handleStart = async () => {
+    setShowGame(true);
+    setShowStartButton(false);
+
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/profile`);
-      setProfile(data);
+      console.log("handling starting the game");
+      const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/startGame`);
+      setFirstSong(data[0].track.name);
+      setSecondSong(data[1].track.name);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('Error getting first two songs:', error);
     }
   };
+
+  const handleEnd = () => {
+    setShowGame(false);
+    setShowStartButton(true);
+  }
 
   return (
     <div className="App">
       <header className="App-header">
-        Higher or Lower
-
-        <button onClick={fetchProfile}>Fetch Profile</button>
-        {profile && (
-          <div>
-            <h2>{profile.display_name}</h2>
-            <img src={profile.images[0]?.url} alt="Profile" />
-            <p>{profile.email}</p>
-          </div>
-        )}
+        <h1>Higher or Lower</h1>
+        { showStartButton && <StartButton onStart={handleStart}/> }
+        { showGame && 
+          <Game 
+            onEnd={handleEnd} 
+            firstSong={firstSong}
+            secondSong={secondSong}
+          />
+        }
       </header>
     </div>
   );

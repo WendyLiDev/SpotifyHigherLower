@@ -42,7 +42,45 @@ app.get('/api/profile', async (req, res) => {
       res.status(500).send('Error fetching profile: ');
     }
 });
+
+app.get('/startGame', async (req, res) => {
+  console.log("trying to start the game");
+  try {
+    const playlist = await getPlaylist();
+    const songs = getSongs(playlist);
+    const twoSongs = [songs[0], songs[1]];
+    res.json(twoSongs);
+  } catch (error) {
+      res.error("There was an issue starting the game: ", error);
+  }
+});
+
+const getPlaylist = async () => {
+  try {
+    const token = await getSpotifyToken();
+    const playlistId = '37i9dQZEVXbLRQDuF5jeBp';
+    const response = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching Spotify playlist:', error);
+    throw error;
+  }
+}
+
+function getSongs(playlist) {
+  let songs = [];
   
+  playlist.tracks.items.map((item, index) => {
+    songs.push(item);
+  })
+
+  return songs;
+}
+
 app.listen(3001, () => {
-    console.log('Server running on port 3001');
+  console.log('Server running on port 3001');
 });
