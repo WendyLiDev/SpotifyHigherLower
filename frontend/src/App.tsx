@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 type Track = {
   name: string;
   id: number;
+  image: string;
 };
 
 function StartButton({onStart}:any) {
@@ -24,13 +25,25 @@ interface GameProps {
 const Game:React.FC<GameProps> = ({onEnd, firstSong, secondSong}) => {
   return (
     <div id="game">
-      <div>
-        <h3>{firstSong.name}</h3>
-        <h4>{firstSong.id}</h4>
+      <div className='container'>
+        <div 
+          id="leftSong" 
+          style={{
+            backgroundImage: `url('${firstSong.image}')`,
+          }}
+        >
+          <h3>{firstSong.name}</h3>
+        </div>
+        <div 
+          id="rightSong"
+          style={{
+            backgroundImage: `url('${secondSong.image}')`,
+          }}
+        >
+          <h3>{secondSong.name}</h3>
+        </div>
       </div>
       <div>
-        <h3>{secondSong.name}</h3>
-        <h4>{secondSong.id}</h4>
         <button id="higherButton">Higher</button>
         <button id="lowerButton">Lower</button>
       </div>
@@ -42,7 +55,8 @@ const Game:React.FC<GameProps> = ({onEnd, firstSong, secondSong}) => {
 function App() {
   const sampleTrack: Track = {
     id: 1,
-    name: 'Song Title'
+    name: 'Song Title',
+    image: ''
   };
 
   const [showStartButton, setShowStartButton] = React.useState(true);
@@ -60,11 +74,13 @@ function App() {
       const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/startGame`);
       const song1: Track = {
         name: data[0].track.name,
-        id: data[0].track.id
+        id: data[0].track.id,
+        image: data[0].track.album.images[0].url
       };
       const song2: Track = {
         name: data[1].track.name,
-        id: data[1].track.id
+        id: data[1].track.id,
+        image: data[1].track.album.images[0].url
       }
       setFirstSong(song1);
       setSecondSong(song2);

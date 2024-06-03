@@ -11,3 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#leftSong {
+  background-color: beige;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+#rightSong {
+  background-color: blue;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.container {  
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+}
