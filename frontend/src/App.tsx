@@ -28,28 +28,35 @@ const Game:React.FC<GameProps> = ({onEnd, firstSong, secondSong}) => {
     <div id="game">
       <div className='container'>
         <div 
-          id="leftSong" 
+          className="left" 
           style={{
             backgroundImage: `url('${firstSong.image}')`,
           }}
         >
-          <h3>{firstSong.name}</h3>
-          <h6>{firstSong.artists}</h6>
+          <div className="songInfo">
+            <h3>{firstSong.name}</h3>
+            <h6>{firstSong.artists}</h6>
+          </div>
         </div>
+        
         <div 
-          id="rightSong"
+          className="right"
           style={{
             backgroundImage: `url('${secondSong.image}')`,
           }}
         >
-          <h3>{secondSong.name}</h3>
-          <h6>{secondSong.artists}</h6>
+          <div className="songInfo">
+            <h3>{secondSong.name}</h3>
+            <h6>{secondSong.artists}</h6>
+          </div>
+
+          <div>
+            <button id="higherButton">Higher</button>
+            <button id="lowerButton">Lower</button>
+          </div>
         </div>
       </div>
-      <div>
-        <button id="higherButton">Higher</button>
-        <button id="lowerButton">Lower</button>
-      </div>
+
       <button id="handleEnd" onClick={onEnd}>End game</button>
     </div>
   );
